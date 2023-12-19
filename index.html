@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie store</title>
+</head>
+<style>
+    body{
+        background-color: rgb(220, 79, 79);
+        font-family: Roboto, "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;;
+       
+    }
+    #heading{
+ background-color: rgb(72, 107, 245);
+ width: 750px;
+ padding: 1px;
+ border-radius: 20px;
+ box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+ margin-left: 250px;
+    }
+    #heading>h1{
+        margin-left: 35px;
+        font-family: Roboto, "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;;
+        font-size: 35px;
+        color: white;
+    }
+    #MovieInput{
+        width: 500px;
+        height: 50px;
+        border-radius: 10px ;
+        margin-top: 30px;
+        margin-left: 370px;
+
+    }
+    #MovieInput:hover{
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+    input[type="text"]{
+        font-size: 30px;
+       padding-left: 10px;
+    }
+    #search{
+        width: 200px;
+        height: 50px;
+        font-size:30px ;
+          margin-left: 530px;
+          margin-top: 30px;
+    }
+    #search:hover{
+        background-color: bisque;
+        color: cornflowerblue;
+        font-weight: 700;
+        border-radius: 10px;
+      
+    }
+   
+    .container{
+        box-shadow: rgb(239, 239, 5) 0px 54px 55px, rgb(239, 239, 5) 0px -12px 30px, rgb(239, 239, 5) 0px 4px 6px, rgb(239, 239, 5) 0px 12px 13px, rgb(239, 239, 5) 0px -3px 5px;
+        border-radius: 20px;
+        background-color: black;
+         width: 520px;
+        height: 700px;
+        border: 1px solid black;
+        justify-content: center;
+        align-items: center;
+        margin-left: 380px;
+        
+    }
+    .movie_title{
+        font-family: Roboto, "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;;
+    justify-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    }
+    .genre{
+color: white;
+        justify-content: center;
+        text-align: center;
+    }
+    .plot_name{
+        color: white;
+        justify-content: center;
+        text-align: center;
+    }
+    .poster{
+        color: white;
+        justify-content: center;
+        align-items: center;
+        margin-left: 100px;
+
+    }
+
+</style>
+<body>
+    <div id="heading"><h1 >SEARCH YOUR FAVORITE MOVIE HERE</h1></div>
+    
+    <input type="text" placeholder="Movie Title" id="MovieInput"><br><br>
+    <div id="root"></div>
+    <button id="search" onclick="movieSearch()">SEARCH</button>
+</body>
+<script>
+    function movieSearch() {
+
+        const searchInput = document.getElementById("MovieInput").value;
+
+        searchInput.innerHTML=""
+        fetch(`https://www.omdbapi.com/?t=${searchInput}&apikey=187a5c09`)
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error(`Error:${response.status}`)
+                }
+                else {
+                    return response.json();
+                }
+            })
+            .then(function (data) {
+                DisplayMovies(data)
+            })
+            .catch(function (error) {
+                console.error(`Error ${error}`)
+            })
+
+
+
+
+        function DisplayMovies(data) {
+            let DisplayMoviesElement = document.getElementById("root");
+            DisplayMoviesElement.innerHTML = '';
+            if (data.Response === `True`) {
+
+                let container=document.createElement("div")
+                container.className="container"
+
+                let titleElement = document.createElement("h1");
+                titleElement.textContent = data.Title;
+                titleElement.className="movie_title"
+
+                let genreElement = document.createElement("h3");
+                genreElement.textContent = data.Genre;
+                genreElement.className="genre"
+
+                let PlotElement = document.createElement("p")
+                PlotElement.textContent = data.Plot;
+                 PlotElement.className="plot_name"
+
+                let PosterElement = document.createElement("img");
+                PosterElement.src = data.Poster
+                PosterElement.className="poster"
+
+            container.append(titleElement, genreElement, PlotElement, PosterElement)
+                DisplayMoviesElement.append(container)
+                searchOutput.append(DisplayMoviesElement);
+            }
+            else {
+                searchOutput.textContent = "not there";
+            }
+        }
+    }
+</script>
+
+</html>
